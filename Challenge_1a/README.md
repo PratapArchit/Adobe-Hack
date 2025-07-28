@@ -1,18 +1,37 @@
 # Adobe-Hack
 This project is part of the Adobe India Hackathon – Connecting the Dots Challenge (Round 1A).
 The goal is to extract a structured outline from a PDF, including:
-1.Document Title
-2.Headings (H1, H2, H3) with page numbers
+1.TOC-Driven Extraction (Priority)
+    a.If a Table of Contents (TOC) is detected, headings are primarily taken from TOC.
+    b.Assigns H1/H2 levels based on numbering (e.g., 1. → H1, 2.1 → H2).
 
-The solution uses font-size and structural analysis to detect headings:
-1.Font size-based detection: Largest fonts → H1, next → H2, etc.
-2.Regex-based pattern detection: Handles numbered headings like 1., 2.1, 3.2.1.
-3.Filtering logic:
-    a.Removes form fields, table content, and paragraphs
-    b.Ignores text inside images
-    c.Applies length and width checks to exclude noise
-4.Title detection: Extracted from the largest text block on the first page.
-5.Runs offline and processes PDFs in under 10 seconds.
+2.AI-Based Classification
+    For PDFs without TOC, an offline ML model (Logistic Regression) predicts whether a text block is a heading based on:
+        a.Font size
+        b.Word count
+        c.Uppercase ratio
+        d.Presence of numbering patterns
+
+3.Heuristic Filtering
+    a.Removes:
+        Pagination text (e.g., Page 4 of 10)
+        Table/form content
+        Dates
+        Text inside images
+    b.Checks:
+        Minimum width threshold
+        Avoids repetitive decorative text
+
+4.Title Detection
+    a.Extracted from the largest text block on the first page.
+
+5.Features
+    a.Runs fully offline inside Docker
+    b.Processes PDFs under 10 seconds
+    c.Handles multilingual PDFs (TOC + AI-based fallback)
+    d.Works in CPU-only AMD64 environments
+
+
 
 Libraries Used:
 1.PyMuPDF (fitz) – PDF text and layout analysis

@@ -1,0 +1,5 @@
+nltk==3.7
+sentence-transformers
+pymupdf
+scikit-learn
+numpy
